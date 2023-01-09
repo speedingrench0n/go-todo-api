@@ -1,5 +1,24 @@
 version: "3"
 services:
+  server:
+    build:
+      context: .
+      dockerfile: ./go-api/Dockerfile
+    container_name: go-todo-api
+    environment:
+      TZ: Asia/Tokyo
+      DB_USERNAME: user
+      DB_PASSWORD: pass
+      DB_HOSTNAME: go-todo-postgres
+      DB_PORT: 5432
+      DB_DBNAME: go-todo-db
+    tty: true
+    volumes:
+      - ./go_api:/app/go-todo-api
+    ports:
+      - "8000:8000"
+    depends_on:
+      -   postgres
   postgres:
     image: postgres:latest
     container_name: go-todo-postgres
@@ -8,7 +27,7 @@ services:
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: go-todo-db
     volumes:
-      - ./postrges/data/pgdata:/var/lib/postgresql/data
+      - ./postgres/data/pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     restart: always
